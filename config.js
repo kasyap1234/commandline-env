@@ -1,9 +1,21 @@
-const path = require('path');
+// config.js
 
-// Define the path to the configuration file
-const configFilePath = path.join(__dirname, 'config.json');
+const fs = require('fs');
+const { decryptData } = require('./encryption');
 
-// Other configuration constants
-const encryptionKey = 'your-secret-key'; // Replace with your actual encryption key
+async function loadSecretKey(password) {
+ // Retrieve the salt securely (this is a placeholder function)
+ const salt = await getSaltFromSecureStorage();
 
-module.exports = { configFilePath, encryptionKey };
+ // Read the encrypted secret key from the file
+ const encryptedSecretKey = fs.readFileSync('config.enc', 'utf8');
+ 
+ // Decrypt the secret key using the provided password and salt
+ const decryptedSecretKey = decryptData(encryptedSecretKey, password, salt);
+
+ return decryptedSecretKey;
+}
+module.exports = {
+  loadSecretKey: loadSecretKey
+};
+

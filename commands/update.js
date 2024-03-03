@@ -12,6 +12,7 @@ function updateVariable(name, value) {
         const configFileContent = fs.readFileSync(configFilePath, 'utf8');
         config = JSON.parse(configFileContent);
     }
+    
 
     // Encrypt the sensitive value
     const { iv, encryptedData } = encrypt(value);

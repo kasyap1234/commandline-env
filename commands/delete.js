@@ -1,10 +1,4 @@
-// delete.js
-
-const fs = require('fs');
-const path = require('path');
-const { configFilePath } = require('../config');
-
-function deleteVariable(name) {
+function deleteVariable(name, encryptionKey) {
     // Read the existing configuration file, if it exists
     let config = {};
     if (fs.existsSync(configFilePath)) {
@@ -22,5 +16,3 @@ function deleteVariable(name) {
         console.log(`Variable ${name} does not exist`);
     }
 }
-
-module.exports = deleteVariable;

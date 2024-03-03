@@ -1,22 +1,22 @@
 const crypto = require('crypto');
-const algorithm = 'aes-256-cbc'; // You can choose a suitable algorithm
+/**
+ * Derive an encryption key from the user's password using PBKDF2.
+ * @param {string} password The user's password.
+ * @returns {Buffer} The derived encryption key.
+ */
+function deriveEncryptionKey(password) {
+ // Use PBKDF2 to derive the encryption key from the password
+ // The salt should be unique for each user and stored securely
+ // The iteration count and key length can be adjusted for security
+ const salt = crypto.randomBytes(16); // Example salt generation
+ const iterations = 100000; // Recommended number of iterations
+ const keyLength = 32; // Length of the derived key in bytes
 
-// Encryption function
-function encrypt(data, key) {
-  const iv = crypto.randomBytes(16); // Generate a random initialization vector
-  const cipher = crypto.createCipheriv(algorithm, Buffer.from(key), iv);
-  let encrypted = cipher.update(data, 'utf8', 'hex');
-  encrypted += cipher.final('hex');
-  return {
-    iv: iv.toString('hex'),
-    encryptedData: encrypted
-  };
+ return crypto.pbkdf2Sync(password, salt, iterations, keyLength, 'sha256');
 }
 
-// Decryption function
-function decrypt(encryptedData, key, iv) {
-  const decipher = crypto.createDecipheriv(algorithm, Buffer.from(key), Buffer.from(iv, 'hex'));
-  let decrypted = decipher.update(encryptedData, 'hex', 'utf8');
-  decrypted += decipher.final('utf8');
-  return decrypted;
-}
+module.exports = {
+ deriveEncryptionKey: deriveEncryptionKey,
+ encryptData: encryptData,
+ decryptData: decryptData
+};

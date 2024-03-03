@@ -10,8 +10,10 @@ async function executeCommand(command, name, value, encryptionKey) {
             break;
         case 'delete':
             deleteVariable(name, encryptionKey);
+        case 'update':
+            updateVariable(name, value, encryptionKey);
             break;
-        // Add 'update' command logic here if needed
+       
         default:
             console.log('Unknown command');
     }

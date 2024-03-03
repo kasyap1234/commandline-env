@@ -1,21 +1,31 @@
+// File: input.js
+
 const readline = require('readline');
 const { deriveEncryptionKey } = require('./encryption');
 
-async function authorizeUser() {
-    const rl = readline.createInterface({
-        input: process.stdin,
-        output: process.stdout
-    });
+let encryptionKey = null; // Store the encryption key for reuse
 
-    return new Promise((resolve, reject) => {
-        rl.question('Enter your password: ', async (password) => {
-            rl.close();
-            try {
-                const encryptionKey = await deriveEncryptionKey(password);
-                resolve(encryptionKey);
-            } catch (error) {
-                reject(error);
-            }
+async function authorizeUser() {
+    if (!encryptionKey) {
+        const rl = readline.createInterface({
+            input: process.stdin,
+            output: process.stdout
         });
-    });
+
+        return new Promise((resolve, reject) => {
+            rl.question('Enter your password: ', async (password) => {
+                rl.close();
+                try {
+                    encryptionKey = await deriveEncryptionKey(password);
+                    resolve(encryptionKey);
+                } catch (error) {
+                    reject(error);
+                }
+            });
+        });
+    } else {
+        return encryptionKey;
+    }
 }
+
+module.exports = { authorizeUser };

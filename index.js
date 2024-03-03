@@ -14,7 +14,18 @@ program
             console.error('Error:', error);
         }
     });
-
+// Define the 'update' command
+program
+    .command('update <name> <newValue>')
+    .description('Update an existing environment variable')
+    .action(async (name, newValue) => {
+        try {
+            const encryptionKey = await authorizeUser();
+            executeCommand('update', name, newValue, encryptionKey);
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    });
 // Define the 'list' command
 program
     .command('list')
@@ -28,6 +39,18 @@ program
         }
     });
 
+// Define the 'update' command
+program
+    .command('update <name> <newValue>')
+    .description('Update an existing environment variable')
+    .action(async (name, newValue) => {
+        try {
+            const encryptionKey = await authorizeUser();
+            executeCommand('update', name, newValue, encryptionKey);
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    });
 // Define the 'delete' command
 program
     .command('delete <name>')

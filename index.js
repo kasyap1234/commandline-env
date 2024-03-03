@@ -1,29 +1,6 @@
 #!/usr/bin/env node
 const { program } = require('commander');
-const addVariable = require('./commands/add');
-const listVariables = require('./commands/list');
-const deleteVariable = require('./commands/delete');
-const { deriveEncryptionKey } = require('./encryption');
-const readline = require('readline');
-
-async function getEncryptionKey() {
-    const rl = readline.createInterface({
-        input: process.stdin,
-        output: process.stdout
-    });
-
-    return new Promise((resolve, reject) => {
-        rl.question('Enter your password: ', async (password) => {
-            rl.close();
-            try {
-                const encryptionKey = await deriveEncryptionKey(password);
-                resolve(encryptionKey);
-            } catch (error) {
-                reject(error);
-            }
-        });
-    });
-}
+const { authorizeUser, executeCommand } = require('./authorization');
 
 // Define the 'add' command
 program
@@ -31,8 +8,8 @@ program
     .description('Add a new environment variable')
     .action(async (name, value) => {
         try {
-            const encryptionKey = await getEncryptionKey();
-            addVariable(name, value, encryptionKey);
+            const encryptionKey = await authorizeUser();
+            executeCommand('add', name, value, encryptionKey);
         } catch (error) {
             console.error('Error:', error);
         }
@@ -44,8 +21,8 @@ program
     .description('List all environment variables')
     .action(async () => {
         try {
-            const encryptionKey = await getEncryptionKey();
-            listVariables(encryptionKey);
+            const encryptionKey = await authorizeUser();
+            executeCommand('list', null, null, encryptionKey);
         } catch (error) {
             console.error('Error:', error);
         }
@@ -57,8 +34,8 @@ program
     .description('Delete an environment variable')
     .action(async (name) => {
         try {
-            const encryptionKey = await getEncryptionKey();
-            deleteVariable(name, encryptionKey);
+            const encryptionKey = await authorizeUser();
+            executeCommand('delete', name, null, encryptionKey);
         } catch (error) {
             console.error('Error:', error);
         }
@@ -66,4 +43,3 @@ program
 
 // Parse command-line arguments
 program.parse(process.argv);
-

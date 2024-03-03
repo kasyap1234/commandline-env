@@ -1,38 +1,41 @@
-const bcrypt = require('bcrypt');
-
-// Function to generate a hashed version of the user's password
-async function generateHashedPassword(password) {
-  try {
-    // Generate a salt
-    const saltRounds = 10; // Number of salt rounds
-    const salt = await bcrypt.genSalt(saltRounds);
-
-    // Hash the password with the salt
-    const hashedPassword = await bcrypt.hash(password, salt);
-
-    return hashedPassword;
-  } catch (error) {
-    console.error('Error generating hashed password:', error);
-    throw error;
-  }
+const crypto=require("crypto");
+const fs=require("fs")
+function encryptPassword(password){
+  const algorithm='aes-256-cbc'
+  const key=crypto.randomBytes(32)
+  const iv=crypto.randomBytes(16)
+  const cipher=crypto.createCipheriv(algorithm,key,iv)
+  let encrypted=cipher.update(password,'utf8','hex')
+  encrypted+=cipher.final('hex')
+  fs.writeFileSync('encryptionKey.key',key.toString('hex'))
+  fs.writeFileSync('encryptioniv.key',iv.toString('hex'))
+  return encrypted
 }
 
-// Function to verify a user's password against a stored hash
-async function verifyPassword(password, storedHash) {
-  try {
-    // Compare the password with the stored hash
-    const isPasswordValid = await bcrypt.compare(password, storedHash);
-    return isPasswordValid;
-  } catch (error) {
-    console.error('Error verifying password:', error);
-    throw error;
-  }
+function storeEncryptedPassword(password){
+  const encryptedPassword=encryptPassword(password)
+  fs.writeFileSync('encryptedPassword.txt',encryptedPassword)
 }
 
-// Usage example
-module.exports={
-  generateHashedPassword,
-  verifyPassword
+function deriveEncryptionKeyFromPassword(encryptedPassword){
+
+  const algorithm = 'aes-256-cbc';
+  const key = Buffer.from(fs.readFileSync('encryptionKey.key', 'utf8'));
+  const iv = Buffer.from(fs.readFileSync('encryptioniv.key', 'utf8'));
+  const decipher = crypto.createDecipheriv(algorithm, key, iv);
+  let decrypted = decipher.update(encryptedPassword, 'hex', 'utf8');
+   const encryptionKey = deriveKeyFromDecryptedPassword(decrypted);
+
+    return encryptionKey;
 }
+function deriveKeyFromDecryptedPassword(password) {
+    // Implement the logic to derive an encryption key from the decrypted password
+    // This could involve using PBKDF2 or another secure key derivation function
+    // For example:
+    const salt = crypto.randomBytes(16);
+    const iterations = 100000;
+    const keyLength = 32;
+    const derivedKey = crypto.pbkdf2Sync(password, salt, iterations, keyLength, 'sha256');
 
-
+    return derivedKey;
+}

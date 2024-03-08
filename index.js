@@ -1,42 +1,61 @@
-
+#!/usr/bin/env node
 const { program } = require('commander');
-const fs = require('fs');
-const path = require('path');
+const {authorizeUser}=require('./input.js');
+const {executeCommand}=require('./execution.js');
+
+
+// Define the 'add' command
 program
-  .version('0.1.0')
-  .description('A CLI tool for managing environment variables with encryption');
-
-
-
-program.parse(process.argv);
-
-
+    .command('add <name> <value>')
+    .description('Add a new environment variable')
+    .action(async (name, value) => {
+        try {
+            const encryptionKey = await authorizeUser();
+            executeCommand('add', name, value, encryptionKey);
+            
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    });
+// Define the 'update' command
 program
-  .command('add <name> <value>')
-  .description('Add a new environment variable')
-  .action((name, value) => {
-    // Determine the path to the configuration file
-    const configFilePath = path.join(process.cwd(), 'env-config.json');
-
-    // Read the existing configuration file, if it exists
-    let config = {};
-    if (fs.existsSync(configFilePath)) {
-      const configFileContent = fs.readFileSync(configFilePath, 'utf8');
-      config = JSON.parse(configFileContent);
-    }
-
-    // Add the new environment variable to the configuration
-    config[name] = value;
-
-    // Encrypt sensitive data if necessary
-    // (Assuming you have a function encrypt() for encryption)
-    // For simplicity, let's assume all values are sensitive and need encryption
-    Object.keys(config).forEach((key) => {
-      config[key] = encrypt(config[key]);
+    .command('update <name> <newValue>')
+    .description('Update an existing environment variable')
+    .action(async (name, newValue) => {
+        try {
+            const encryptionKey = await authorizeUser();
+            executeCommand('update', name, newValue, encryptionKey);
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    });
+// Define the 'list' command
+program
+    .command('list')
+    .description('List all environment variables')
+    .action(async () => {
+        try {
+            const encryptionKey = await authorizeUser();
+            executeCommand('list', null, null, encryptionKey);
+        } catch (error) {
+            console.error('Error:', error);
+        }
     });
 
-    // Write the updated configuration back to the file
-    fs.writeFileSync(configFilePath, JSON.stringify(config, null, 2));
 
-    console.log(`Added variable: ${name}=${value}`);
-  });
+
+// Define the 'delete' command
+program
+    .command('delete <name>')
+    .description('Delete an environment variable')
+    .action(async (name) => {
+        try {
+            const encryptionKey = await authorizeUser();
+            executeCommand('delete', name, null, encryptionKey);
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    });
+
+// Parse command-line arguments
+program.parse(process.argv);

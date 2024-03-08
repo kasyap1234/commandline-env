@@ -1,7 +1,5 @@
-// File: input.js
-
 const readline = require('readline');
-const { deriveEncryptionKey } = require('./encryption');
+const { encryptPassword, storeEncryptedPassword, deriveEncryptionKeyFromPassword } = require('./user-password');
 
 let encryptionKey = null; // Store the encryption key for reuse
 
@@ -16,7 +14,12 @@ async function authorizeUser() {
             rl.question('Enter your password: ', async (password) => {
                 rl.close();
                 try {
-                    encryptionKey = await deriveEncryptionKey(password);
+                    // Encrypt the password and store it
+                    const encryptedPassword = encryptPassword(password);
+                    storeEncryptedPassword(encryptedPassword);
+
+                    // Derive the encryption key from the encrypted password
+                    encryptionKey = await deriveEncryptionKeyFromPassword(encryptedPassword);
                     resolve(encryptionKey);
                 } catch (error) {
                     reject(error);

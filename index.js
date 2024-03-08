@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 const { program } = require('commander');
-const { authorizeUser, executeCommand } = require('./authorization');
+const {authorizeUser}=require('./input.js');
+
 
 // Define the 'add' command
 program
@@ -10,6 +11,7 @@ program
         try {
             const encryptionKey = await authorizeUser();
             executeCommand('add', name, value, encryptionKey);
+            executeCommand()
         } catch (error) {
             console.error('Error:', error);
         }
@@ -39,18 +41,8 @@ program
         }
     });
 
-// Define the 'update' command
-program
-    .command('update <name> <newValue>')
-    .description('Update an existing environment variable')
-    .action(async (name, newValue) => {
-        try {
-            const encryptionKey = await authorizeUser();
-            executeCommand('update', name, newValue, encryptionKey);
-        } catch (error) {
-            console.error('Error:', error);
-        }
-    });
+
+
 // Define the 'delete' command
 program
     .command('delete <name>')

@@ -3,7 +3,7 @@
 const fs = require('fs');
 const path = require('path');
 
-function listVariables(encryptionKey) {
+function listVariable(encryptionKey) {
     const envFilePath = path.join(__dirname, '..', 'env.json'); // Adjust the path as necessary
     if (fs.existsSync(envFilePath)) {
         const envData = JSON.parse(fs.readFileSync(envFilePath, 'utf8'));
@@ -16,4 +16,4 @@ function listVariables(encryptionKey) {
     }
 }
 
-module.exports = { listVariables };
+module.exports = { listVariable };

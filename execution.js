@@ -1,4 +1,7 @@
-const { addVariable, listVariables, deleteVariable } = require('./commands');
+const { addVariable } = require('./commands/addVariable');
+const { listVariable} = require('./commands/listVariable');
+const { deleteVariable } = require('./commands/deleteVariable');
+const { updateVariable } = require('./commands/updateVariable');
 
 async function executeCommand(command, name, value, encryptionKey) {
     switch (command) {
@@ -6,7 +9,7 @@ async function executeCommand(command, name, value, encryptionKey) {
             addVariable(name, value, encryptionKey);
             break;
         case 'list':
-            listVariables(encryptionKey);
+            listVariable(encryptionKey);
             break;
         case 'delete':
             deleteVariable(name, encryptionKey);
@@ -18,3 +21,4 @@ async function executeCommand(command, name, value, encryptionKey) {
             console.log('Unknown command');
     }
 }
+module.exports={executeCommand};

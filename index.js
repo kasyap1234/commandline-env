@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 const { program } = require('commander');
 const {authorizeUser}=require('./input.js');
+const {executeCommand}=require('./execution.js');
 
 
 // Define the 'add' command
@@ -11,7 +12,7 @@ program
         try {
             const encryptionKey = await authorizeUser();
             executeCommand('add', name, value, encryptionKey);
-            executeCommand()
+            
         } catch (error) {
             console.error('Error:', error);
         }

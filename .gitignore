@@ -1,0 +1,6 @@
+node_modules/
+.env
+encryptedPassword.txt
+encryptionKey.key
+encryptioniv.key
+salt.key

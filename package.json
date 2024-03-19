@@ -1,16 +1,14 @@
 {
-  "name": "my-cli-envkey",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index.js"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "commander": "^12.0.0"
-  }
+	"name": "my-cli-envkey",
+	"version": "1.0.0",
+	"description": "My CLI tool for envkey",
+	"main": "index.js",
+	"bin": {
+		"my-cli-envkey": "./index.js"
+	},
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"author": "Kasyap Dharanikota",
+	"license": "ISC"
 }

@@ -6,7 +6,7 @@ const crypto = require('crypto');
 const { encryptPassword } = require('../user-password'); // Adjust the path as necessary
 
 async function updateVariable(name, newValue, encryptionKey) {
-    const envFilePath = path.join(__dirname, '..', 'env.json'); // Adjust the path as necessary
+    const envFilePath = path.join(__dirname, '..', '.env.json'); // Adjust the path as necessary
     let envData = {};
     if (fs.existsSync(envFilePath)) {
         const encryptedEnv = fs.readFileSync(envFilePath, 'utf8');

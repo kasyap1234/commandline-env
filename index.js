@@ -1,8 +1,22 @@
-#!/usr/bin/env node
+const fs = require('fs');
+const crypto = require('crypto');
 const { program } = require('commander');
-const {authorizeUser}=require('./input.js');
-const {executeCommand}=require('./execution.js');
+const { authorizeUser } = require('./input.js');
+const { executeCommand } = require('./execution.js');
 
+// Define the 'read' command
+program
+    .command('read')
+    .description('Read the environment variables')
+    .action(async () => {
+        try {
+            const encryptionKey = await authorizeUser();
+            const env = readEnvFile(encryptionKey);
+            console.log(env);
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    });
 
 // Define the 'add' command
 program
@@ -17,6 +31,7 @@ program
             console.error('Error:', error);
         }
     });
+
 // Define the 'update' command
 program
     .command('update <name> <newValue>')
@@ -29,6 +44,7 @@ program
             console.error('Error:', error);
         }
     });
+
 // Define the 'list' command
 program
     .command('list')
@@ -41,8 +57,6 @@ program
             console.error('Error:', error);
         }
     });
-
-
 
 // Define the 'delete' command
 program
@@ -59,3 +73,13 @@ program
 
 // Parse command-line arguments
 program.parse(process.argv);
+
+// File: index.js
+
+function readEnvFile(encryptionKey) {
+    const encryptedEnv = fs.readFileSync('.env.json', 'utf8');
+    const decipher = crypto.createDecipheriv('aes-256-cbc', encryptionKey, Buffer.from('1234567890123456', 'hex'));
+    let decrypted = decipher.update(encryptedEnv, 'hex', 'utf8');
+    decrypted += decipher.final('utf8');
+    return JSON.parse(decrypted);
+}

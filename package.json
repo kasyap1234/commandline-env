@@ -1,10 +1,10 @@
 {
 	"name": "my-cli-envkey",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"description": "My CLI tool for envkey",
 	"main": "index.js",
 	"bin": {
-		"my-cli-envkey": "./index.js"
+		"cli": "./index.js"
 	},
 	"scripts": {
     "start": "node index.js",
